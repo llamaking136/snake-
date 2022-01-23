@@ -44,6 +44,14 @@ FramePerSec = pygame.time.Clock()
 FPS = 15
 
 def getkeydown(key):
+    if isinstance(key, int):
+        try:
+            if DOWN_KEYS[key]:
+                return True
+            else:
+                return False
+        except KeyError:
+            return False
     try:
         if DOWN_KEYS[ord(key)]:
             return True
@@ -74,7 +82,7 @@ class Snake:
         self.length = 1
         self.isDead = False
         self.direction = Direction.RIGHT
-        self.boxes = [(x, y), (x - 1, y)]
+        self.boxes = [(x, y), (x - 1, y), (x - 2, y)]
 
         self.grid.arr[x][y] = True
     
@@ -87,9 +95,9 @@ class Snake:
 
     def getDirection(self, direction, coord):
         if direction == Direction.UP:
-            return (coord[0], coord[1] + 1)
-        elif direction == Direction.DOWN:
             return (coord[0], coord[1] - 1)
+        elif direction == Direction.DOWN:
+            return (coord[0], coord[1] + 1)
         elif direction == Direction.LEFT:
             return (coord[0] - 1, coord[1])
         elif direction == Direction.RIGHT:
@@ -163,6 +171,15 @@ def main():
         if not do_update:
             if t >= time_until_sleep:
                 do_update = True
+
+        if getkeydown(K_UP):
+            snake.direction = Direction.UP
+        elif getkeydown(K_DOWN):
+            snake.direction = Direction.DOWN
+        elif getkeydown(K_LEFT):
+            snake.direction = Direction.LEFT
+        elif getkeydown(K_RIGHT):
+            snake.direction = Direction.RIGHT
 
         pygame.display.flip()
         
